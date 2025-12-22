@@ -42,7 +42,7 @@ jobs:
         run: npx playwright test
 
       - name: Upload Playwright test results
-        uses: actions/upload-artifact@v3 # Use v3 or v4
+        uses: actions/upload-artifact@v4 # Use v3 or v4
         if: always() # Ensures this step runs even if 'Run Playwright tests' fails
         with:
           name: playwright-test-results # The name of the .zip file you'll download
