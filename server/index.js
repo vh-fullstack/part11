@@ -37,7 +37,7 @@ const start = async () => {
 
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: '/',
+    path: '/graphql',
   })
 
   const serverCleanup = useServer({ schema }, wsServer)
