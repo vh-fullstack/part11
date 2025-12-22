@@ -31,15 +31,6 @@ describe('Library Application', () => {
       await page.locator('form')
         .getByRole('button', { name: 'login' })
         .click()
-
-      // Assertion: How do we know we are logged in?
-      // The UI should change. The "add book" button should appear.
-      // await expect(page.getByRole('button', { name: 'add book' })).toBeVisible()
-      // await expect(page.getByRole('button', { name: 'logout' })).toBeVisible()
-
-      // The login button should be gone
-      // await expect(page.getByRole('button', { name: 'login' })).not.toBeVisible()
-      // await expect(page.getByRole('button', { name: 'logout' })).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
