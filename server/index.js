@@ -80,10 +80,6 @@ const start = async () => {
     }),
   )
 
-  /*   app.get('/health', (req, res) => {
-    res.send('ok')
-  }) */
-
   app.get('/health', (req, res) => {
     // mongoose.connection.readyState:
     // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
