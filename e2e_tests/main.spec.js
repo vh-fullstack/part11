@@ -32,6 +32,8 @@ describe('Library Application', () => {
         .getByRole('button', { name: 'login' })
         .click()
 
+      await page.waitForLoadState('networkidle')
+
       // Assertion: How do we know we are logged in?
       // The UI should change. The "add book" button should appear.
       await expect(page.getByRole('button', { name: 'add book' })).toBeVisible()
