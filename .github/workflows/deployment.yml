@@ -45,9 +45,9 @@ jobs:
         uses: actions/upload-artifact@v3 # Use v3 or v4
         if: always() # Ensures this step runs even if 'Run Playwright tests' fails
         with:
-      - name: playwright-test-results # The name of the .zip file you'll download
-        path: test-results/           # The directory where Playwright saves everything
-        retention-days: 1
+          name: playwright-test-results # The name of the .zip file you'll download
+          path: test-results/           # The directory where Playwright saves everything
+          retention-days: 1
 
       - name: Deploy to Fly.io
         if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
