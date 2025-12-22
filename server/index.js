@@ -25,12 +25,12 @@ const start = async () => {
   const app = express()
   const httpServer = http.createServer(app)
 
-  try {
-    await mongoose.connect(process.env.MONGODB_URI)
-    console.log('connected to MongoDB')
-  } catch (error) {
-    console.log('error connection to MongoDB:', error.message)
-    process.exit(1)
+  if (process.env.MONGODB_URI) {
+    mongoose.connect(process.env.MONGODB_URI)
+      .then(() => console.log('Connected to MongoDB'))
+      .catch((error) => console.error('Error connecting to MongoDB:', error.message))
+  } else {
+    console.log('MONGODB_URI not set. Starting server without database connection.')
   }
 
   const schema = makeExecutableSchema({ typeDefs, resolvers })
