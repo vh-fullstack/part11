@@ -20,31 +20,30 @@ const resolvers = require('./resolvers')
 
 require('dotenv').config()
 
-const MONGODB_URI = process.env.MONGODB_URI
-
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    console.log('connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error connection to MongoDB:', error.message)
-  })
-
 // setup is now within a function
 const start = async () => {
   const app = express()
   const httpServer = http.createServer(app)
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI)
+    console.log('connected to MongoDB')
+  } catch (error) {
+    console.log('error connection to MongoDB:', error.message)
+    process.exit(1)
+  }
+
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
 
   const wsServer = new WebSocketServer({
     server: httpServer,
     path: '/',
   })
 
-  const schema = makeExecutableSchema({ typeDefs, resolvers })
   const serverCleanup = useServer({ schema }, wsServer)
 
   const server = new ApolloServer({
-    schema: makeExecutableSchema({ typeDefs, resolvers }),
+    schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer }),
       {
         async serverWillStart() {
@@ -60,21 +59,40 @@ const start = async () => {
 
   await server.start()
 
+  app.use(cors())
+  app.use(express.json())
+
   app.use(
     '/graphql',
-    cors(),
-    express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null
         if (auth && auth.startsWith('Bearer ')) {
-          const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
-          const currentUser = await User.findById(decodedToken.id)
-          return { currentUser }
+          try {
+            const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
+            const currentUser = await User.findById(decodedToken.id)
+            return { currentUser }
+          } catch (err) {
+            return {}
+          }
         }
       },
     }),
   )
+
+  /*   app.get('/health', (req, res) => {
+    res.send('ok')
+  }) */
+
+  app.get('/health', (req, res) => {
+    // mongoose.connection.readyState:
+    // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
+    if (mongoose.connection.readyState === 1) {
+      res.status(200).send('ok')
+    } else {
+      res.status(500).send('database disconnected')
+    }
+  })
 
   // ... static file serving comes AFTER this ...
   app.use(express.static(path.join(__dirname, '../client/dist')))
