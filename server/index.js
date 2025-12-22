@@ -81,9 +81,9 @@ const start = async () => {
   )
 
   app.get('/health', (req, res) => {
-    // mongoose.connection.readyState:
+    const state = mongoose.connection.readyState
     // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
-    if (mongoose.connection.readyState === 1) {
+    if (state === 1 || state === 2) {
       res.status(200).send('ok')
     } else {
       res.status(500).send('database disconnected')

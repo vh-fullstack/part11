@@ -38,3 +38,7 @@ primary_region = 'yyz'
   method = "GET"
   timeout = "5s"
   path = "/health"
+
+  # Give the app 20 seconds to start up and wake the DB 
+  # before the first check runs.
+  grace_period = "20s"
