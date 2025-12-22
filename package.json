@@ -1,0 +1,44 @@
+{
+  "name": "biblioSync",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "description": "Real-time inventory management service powered by GraphQL.",
+  "main": "server/index.js",
+  "scripts": {
+    "build": "npm run build --prefix client",
+    "start:server": "cd server && npm start",
+    "start:client": "cd client && npm run dev",
+    "dev": "concurrently -k \"npm:start:server\" \"npm:start:client\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:ui": "playwright test --ui"    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vh-fullstack/part11_fso.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vh-fullstack/part11_fso/issues"
+  },
+  "homepage": "https://github.com/vh-fullstack/part11_fso#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@playwright/test": "^1.57.0",
+    "@stylistic/eslint-plugin": "^5.6.1",
+    "@types/node": "^25.0.3",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.5.0"
+  }
+}
