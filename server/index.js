@@ -7,6 +7,7 @@ const { makeExecutableSchema } = require('@graphql-tools/schema')
 const express = require('express')
 const cors = require('cors')
 const http = require('http')
+const path = require('path')
 
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
@@ -60,7 +61,7 @@ const start = async () => {
   await server.start()
 
   app.use(
-    '/',
+    '/graphql',
     cors(),
     express.json(),
     expressMiddleware(server, {
@@ -75,7 +76,10 @@ const start = async () => {
     }),
   )
 
-  const PORT = 4000
+  // ... static file serving comes AFTER this ...
+  app.use(express.static(path.join(__dirname, '../client/dist')))
+
+  const PORT = process.env.PORT || 4000
 
   httpServer.listen(PORT, () =>
     console.log(`Server is now running on http://localhost:${PORT}`)

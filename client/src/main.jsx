@@ -22,11 +22,25 @@ const authLink = new setContext((_, { headers }) => {
   }
 })
 
+// WebSockets need a full URL (ws:// or wss://). They can't use relative paths.
+const wsUrl = import.meta.env.PROD
+  ? `wss://${window.location.host}` // Uses current Fly domain, upgrades to Secure WS (wss)
+  : 'ws://localhost:4000/graphql'
+
 const wsLink = new GraphQLWsLink(
-  createClient({ url: 'ws://localhost:4000' })
+  createClient({
+    url: wsUrl,
+  })
 )
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000' })
+// If in Prod, use relative path (browser handles domain).
+// If in Dev, use localhost:4000.
+const httpLink = new HttpLink({
+  uri: import.meta.env.PROD
+    ? '/graphql'
+    : 'http://localhost:4000/graphql',
+})
+
 
 const splitLink = split(
   ({ query }) => {
