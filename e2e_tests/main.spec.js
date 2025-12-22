@@ -19,6 +19,7 @@ describe('Library Application', () => {
       await page.getByRole('navigation')
         .getByRole('button', { name: 'login' })
         .click()
+      await page.waitForLoadState('domcontentloaded')
     })
 
     test('succeeds with correct credentials', async ({ page }) => {
